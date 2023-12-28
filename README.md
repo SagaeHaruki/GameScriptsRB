@@ -10,6 +10,7 @@
 
 - Attacking System
 - Health System
+- Inventory System
 - NPC Interaction System
 
 <h1>Current Changes:</h1>
