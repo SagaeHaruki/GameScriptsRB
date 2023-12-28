@@ -12,6 +12,7 @@
 - Health System
 - Inventory System
 - Pause (Esc) System
+- Ledge Detection System
 - NPC Interaction System
 
 <h1>Current Changes:</h1>
