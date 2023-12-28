@@ -22,3 +22,4 @@
 - Change the player movement to Rigid body instead of Character Control
 - Change the IK SYstem to Rigid body instead of Character Control
 - Better Ground Detection
+- Better Gravity
