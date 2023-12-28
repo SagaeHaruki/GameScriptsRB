@@ -11,6 +11,7 @@
 - Attacking System
 - Health System
 - Inventory System
+- Pause (Esc) System
 - NPC Interaction System
 
 <h1>Current Changes:</h1>
