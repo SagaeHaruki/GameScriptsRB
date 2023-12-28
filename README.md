@@ -5,10 +5,11 @@
 <h1>Dev's Note:</h1>
 
 - This is using a Unity Editor version of (2021.3.23f1).
+- All of the scripts here comes from the other project [SGame Scripts](https://github.com/SagaeHaruki/SGameScripts)
 
 <h1>Future plans:</h1>
 
-- Attacking System
+- Attacking System (Including Combo Attacks)
 - Health System
 - Inventory System
 - Pause (Esc) System
@@ -18,5 +19,6 @@
 <h1>Current Changes:</h1>
 
 [Dec. 27, 2023]
-- Break today no changes
-- Back tomorrow for some small cleaning of the code
+- Change the player movement to Rigid body instead of Character Control
+- Change the IK SYstem to Rigid body instead of Character Control
+- Better Ground Detection
