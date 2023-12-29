@@ -62,7 +62,6 @@ public class IKSystem : MonoBehaviour
         ChangeState();
         GetSlopeAngle();
         isMoving = instance.isMoving;
-        isJumping = instance.isJumping;
         onSlope = instance.onSlope;
         isGrounded = instance.isGrounded;
     }
@@ -73,7 +72,6 @@ public class IKSystem : MonoBehaviour
         {
             Vector3 groundNormal = hit.normal;
             slopeAngle = Vector3.Angle(groundNormal, Vector3.up);
-            print(slopeAngle);
         }
     }
 

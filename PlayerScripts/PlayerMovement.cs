@@ -5,8 +5,13 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(IKSystem))]
+[RequireComponent(typeof(AnimationScript))]
 public class PlayerMovement : MonoBehaviour
 {
+    #region Instances
+    AnimationScript Animscript;
+    #endregion
+
     #region
     [SerializeField] private Rigidbody playerControl;
     [SerializeField] private CapsuleCollider capsuleCollider;
@@ -17,9 +22,12 @@ public class PlayerMovement : MonoBehaviour
     #endregion
 
     #region Player values
+    [SerializeField] private float groundDistance = 0.1f;
     [SerializeField] private float playerSpeed = 5f;
     [SerializeField] private float speedModifier = 1f;
     [SerializeField] private float jumpForce = 4.2f;
+    [SerializeField] private float jumpForwardForce = 2.3f;
+    [SerializeField] private float minHeightDifference = 2.5f;
     #endregion
 
     #region Camera Movement Smoothness
@@ -30,12 +38,10 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] public string playerState;
     [SerializeField] public bool isMoving;
     // Sorts of Movements
-    [SerializeField] public bool isJumping;
     [SerializeField] public bool isWalking;
     [SerializeField] public bool isRunning;
     [SerializeField] public bool isSprinting;
     [SerializeField] private bool isAttacking;
-    [SerializeField] public bool currentlyMoving;
 
     // Falling or Grounded
     [SerializeField] public bool isFalling;
@@ -49,6 +55,7 @@ public class PlayerMovement : MonoBehaviour
         playerControl = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
         capsuleCollider = GetComponent<CapsuleCollider>();
+        isRunning = true;
 
         // Hides & lock the cursor
         Cursor.visible = false;
@@ -60,11 +67,10 @@ public class PlayerMovement : MonoBehaviour
         showCursor();
         velLimit();
         GetKeyPress();
-
-        Vector3 point1 = transform.position + capsuleCollider.center + Vector3.up * (capsuleCollider.height / 2 - capsuleCollider.radius);
-        Vector3 point2 = transform.position + capsuleCollider.center - Vector3.up * (capsuleCollider.height / 2 - capsuleCollider.radius);
-
-        isGrounded = Physics.CapsuleCast(point1, point2, capsuleCollider.radius * 0.9f, Vector3.down, 0.1f);
+        ChangeState();
+        FallingState();
+        SpeedModifierSection();
+        JumpHandlerSection();
 
         float horizontal = Input.GetKey(KeyCode.A) ? -1f : Input.GetKey(KeyCode.D) ? 1f : 0f;
         float vertical = Input.GetKey(KeyCode.W) ? 1f : Input.GetKey(KeyCode.S) ? -1f : 0f;
@@ -88,22 +94,141 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    private void SpeedModifierSection()
+    {
+        // Change the speed based on the player state
+        // Note: Change the speedModifier if it doesn't sync with the animation
+
+        if (isWalking)
+        {
+            speedModifier = 2.3f;
+        }
+
+        if (isRunning)
+        {
+            speedModifier = 6.3f;
+        }
+
+        if (isSprinting)
+        {
+            speedModifier = 8.2f;
+        }
+    }
+
+
+    private void ChangeState()
+    {
+        if (!isFalling)
+        {
+            if (isMoving)
+            {
+                if (isRunning)
+                {
+                    playerState = "Running";
+                }
+
+                if (isWalking)
+                {
+                    playerState = "Walking";
+                }
+
+                if (isSprinting)
+                {
+                    playerState = "Sprinting";
+                }
+            }
+            else
+            {
+                playerState = "Idle";
+            }
+        }
+        else
+        {
+            playerState = "Falling";
+        }
+    }
+
+
+    #region Key Press Section
     private void GetKeyPress()
     {
-        if (isGrounded)
+        // Toggle between Walk and Sprint Section
+        if (Input.GetKeyDown(KeyCode.LeftControl))
         {
-            if (Input.GetKeyDown(KeyCode.Space) && !isJumping)
+            if (isRunning)
             {
-                isJumping = true;
-                playerControl.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+                isRunning = false;
+                isWalking = true;
             }
-            else if (isGrounded)
+            else
             {
-                isJumping = false;
+                isRunning = true;
+                isWalking = false;
             }
         }
     }
 
+    private void JumpHandlerSection()
+    {
+        if (isGrounded)
+        {
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                Vector3 jumpDirection = transform.forward * jumpForwardForce;
+                playerControl.velocity += jumpDirection;
+                playerControl.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+
+                if (isWalking)
+                {
+
+                }
+
+                if (isRunning)
+                {
+
+                }
+
+                if (isSprinting)
+                {
+
+                }
+            }
+        }
+    }
+    #endregion
+
+    #region
+    public void FallingState()
+    {
+        // Section that checks if the player is grounded or not
+        Vector3 point1 = transform.position + capsuleCollider.center + Vector3.up * (capsuleCollider.height / 2 - capsuleCollider.radius);
+        Vector3 point2 = transform.position + capsuleCollider.center - Vector3.up * (capsuleCollider.height / 2 - capsuleCollider.radius);
+        isGrounded = Physics.CapsuleCast(point1, point2, capsuleCollider.radius * 0.9f, Vector3.down, 0.1f);
+
+        // If not grounded change the state to falling
+        if (!isGrounded)
+        {
+            RaycastHit hit;
+
+            Ray ray = new Ray(transform.position, Vector3.down);
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity, layerMasks))
+            {
+                float currentHeight = hit.distance;
+
+                if (currentHeight >= minHeightDifference)
+                {
+                    isFalling = true;
+                }
+            }
+        }
+        else
+        {
+            isFalling = false;
+        }
+    }
+    #endregion
+
+    #region Some usefull stuffs will happen here
     private void velLimit()
     {
         Vector3 flatVel = new Vector3(playerControl.velocity.x, 0f, playerControl.velocity.z);
@@ -129,4 +254,5 @@ public class PlayerMovement : MonoBehaviour
             Cursor.lockState = CursorLockMode.Locked;
         }
     }
+    #endregion
 }
