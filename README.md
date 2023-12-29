@@ -19,7 +19,5 @@
 <h1>Current Changes:</h1>
 
 [Dec. 28, 2023]
-- Change the player movement to Rigid body instead of Character Control
-- Change the IK SYstem to Rigid body instead of Character Control
-- Better Ground Detection
-- Better Gravity
+- Trying to fix the isJumping State (automatically getting set to false by the isGrounded State)
+- Speed Change based on Movement Type
