@@ -21,5 +21,6 @@
 [Dec. 28, 2023]
 - Trying to fix the isJumping State (automatically getting set to false by the isGrounded State)
 - Speed Change based on Movement Type
+- Falling State Added
 - Player State System Added
 - Animation System Added (No Codes yet, while fixing some minor issues)
