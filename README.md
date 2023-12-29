@@ -18,7 +18,7 @@
 
 <h1>Current Changes:</h1>
 
-[Dec. 27, 2023]
+[Dec. 28, 2023]
 - Change the player movement to Rigid body instead of Character Control
 - Change the IK SYstem to Rigid body instead of Character Control
 - Better Ground Detection
