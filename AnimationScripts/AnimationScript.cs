@@ -25,6 +25,42 @@ public class AnimationScript : MonoBehaviour
         isWalking = instance.isWalking;
         isRunning = instance.isRunning;
         isSprinting = instance.isSprinting;
+
+        MovingState();
+    }
+
+    public void MovingState()
+    {
+        if (!isFalling)
+        {
+            if (isMoving)
+            {
+                if (isWalking)
+                {
+
+                }
+
+                if (isRunning)
+                {
+
+                }
+
+                if (isSprinting)
+                {
+
+                }
+            }
+
+            if (!isMoving)
+            {
+
+            }
+        }
+
+        if (isFalling)
+        {
+
+        }
     }
 
     public void JumpingState()

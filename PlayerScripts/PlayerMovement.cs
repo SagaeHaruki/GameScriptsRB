@@ -28,7 +28,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float speedModifier = 1f;
     [SerializeField] private float jumpForce = 4.2f;
     [SerializeField] private float jumpForwardForce = 2.3f;
-    [SerializeField] private float minHeightDifference = 2.5f;
+    [SerializeField] private float FallingHeightDiff = 2.2f;
+    [SerializeField] private float GlidingHeightDiff = 1.8f;
     #endregion
 
     #region Camera Movement Smoothness
@@ -43,7 +44,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] public bool isRunning;
     [SerializeField] public bool isSprinting;
     [SerializeField] public bool isClimbing;
-    [SerializeField] private bool isAttacking;
+    [SerializeField] public bool isGliding;
+    [SerializeField] public bool isAttacking;
 
     // Falling or Grounded
     [SerializeField] public bool isFalling;
@@ -51,6 +53,10 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] public bool onSlope;
     [SerializeField] private bool goingUp;
     [SerializeField] private bool goingDown;
+
+    [SerializeField] public float glideSpeed = 5f;
+    [SerializeField] public float maxGlideSpeed = 10f;
+    [SerializeField] public float glideDownForceWhileGliding = 3f;
 
     private void Awake()
     {
@@ -80,7 +86,7 @@ public class PlayerMovement : MonoBehaviour
 
         Vector3 direction = new Vector3(horizontal, 0f, vertical).normalized;
 
-        if (isGrounded)
+        if (isGrounded || isGliding)
         {
             if (direction.magnitude >= 0.1f && !isClimbing)
             {
@@ -121,6 +127,11 @@ public class PlayerMovement : MonoBehaviour
         {
             speedModifier = 8.2f;
         }
+
+        if(isGliding)
+        {
+            speedModifier = 4.6f;
+        }
     }
 
 
@@ -143,6 +154,11 @@ public class PlayerMovement : MonoBehaviour
                 if (isSprinting)
                 {
                     playerState = "Sprinting";
+                }
+
+                if (isGliding)
+                {
+                    playerState = "Gliding";
                 }
             }
             else
@@ -207,6 +223,43 @@ public class PlayerMovement : MonoBehaviour
                 }
             }
         }
+
+        if (!isGrounded)
+        {
+            if (Input.GetKeyDown(KeyCode.Space) && !isGliding)
+            {
+                RaycastHit hit;
+
+                Ray ray = new Ray(transform.position, Vector3.down);
+                if (Physics.Raycast(ray, out hit, Mathf.Infinity, layerMasks))
+                {
+                    float currentHeight = hit.distance;
+
+                    if (currentHeight >= FallingHeightDiff)
+                    {
+                        if (isFalling)
+                        {
+                            isFalling = false;   
+                            isGliding = true;
+                        }
+
+                        if (!isFalling)
+                        {
+                            isGliding = true;
+                        }
+                    }
+                }
+            }
+            else if(Input.GetKeyDown(KeyCode.Space) && isGliding)
+            {
+                isGliding = false;
+            }
+        }
+
+        if (isGrounded && isGliding)
+        {
+            isGliding = false;
+        }
     }
     #endregion
 
@@ -228,15 +281,53 @@ public class PlayerMovement : MonoBehaviour
             {
                 float currentHeight = hit.distance;
 
-                if (currentHeight >= minHeightDifference)
+                if (currentHeight >= FallingHeightDiff)
                 {
-                    isFalling = true;
+                    if (!isGliding)
+                    {
+                        isFalling = true;
+                    }
                 }
             }
         }
         else
         {
             isFalling = false;
+        }
+
+
+        if (isGliding)
+        {
+            RaycastHit hit;
+
+            Ray ray = new Ray(transform.position, Vector3.down);
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity, layerMasks))
+            {
+                float currentHeight = hit.distance;
+                if (currentHeight >= GlidingHeightDiff)
+                {
+                    // Calculate the desired velocity while gliding
+                    Vector3 desiredVelocity = transform.forward * glideSpeed;
+
+                    // Limit the maximum speed while gliding
+                    if (desiredVelocity.magnitude > maxGlideSpeed)
+                    {
+                        desiredVelocity = desiredVelocity.normalized * maxGlideSpeed;
+                    }
+
+                    // Set the Rigidbody's velocity directly
+                    playerControl.velocity = desiredVelocity;
+
+                    // Apply a different downward force while gliding
+                    playerControl.AddForce(Vector3.down * glideDownForceWhileGliding, ForceMode.Acceleration);
+
+                }
+            }
+        }
+        else
+        {
+            playerControl.useGravity = true;
+            playerControl.drag = 0f;
         }
     }
     #endregion
