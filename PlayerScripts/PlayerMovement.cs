@@ -2,6 +2,7 @@ using Cinemachine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 [RequireComponent(typeof(IKSystem))]
@@ -13,7 +14,7 @@ public class PlayerMovement : MonoBehaviour
     #endregion
 
     #region
-    [SerializeField] private Rigidbody playerControl;
+    [SerializeField] public Rigidbody playerControl;
     [SerializeField] private CapsuleCollider capsuleCollider;
     [SerializeField] private Animator animator;
     [SerializeField] private CinemachineVirtualCamera virtualCamera;
@@ -41,6 +42,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] public bool isWalking;
     [SerializeField] public bool isRunning;
     [SerializeField] public bool isSprinting;
+    [SerializeField] public bool isClimbing;
     [SerializeField] private bool isAttacking;
 
     // Falling or Grounded
@@ -72,25 +74,31 @@ public class PlayerMovement : MonoBehaviour
         SpeedModifierSection();
         JumpHandlerSection();
 
+
         float horizontal = Input.GetKey(KeyCode.A) ? -1f : Input.GetKey(KeyCode.D) ? 1f : 0f;
         float vertical = Input.GetKey(KeyCode.W) ? 1f : Input.GetKey(KeyCode.S) ? -1f : 0f;
 
         Vector3 direction = new Vector3(horizontal, 0f, vertical).normalized;
 
-        if (direction.magnitude >= 0.1f)
+        if (isGrounded)
         {
-            // This Section will calculate the direction of the player, then smoothens it rotation based on the calulated direction
-            float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + mainCamera.eulerAngles.y;
-            float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref smoothingVelocity, turnSmoothing);
-            transform.rotation = Quaternion.Euler(0f, angle, 0f);
+            if (direction.magnitude >= 0.1f && !isClimbing)
+            {
+                // This Section will calculate the direction of the player, then smoothens it rotation based on the calulated direction
+                float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + mainCamera.eulerAngles.y;
+                float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref smoothingVelocity, turnSmoothing);
+                transform.rotation = Quaternion.Euler(0f, angle, 0f);
 
-            Vector3 newDirection = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
-            playerControl.AddForce(newDirection.normalized * playerSpeed * speedModifier, ForceMode.Force);
-            isMoving = true;
-        }
-        else
-        {
-            isMoving = false;
+                float newSpeed = playerSpeed * speedModifier;
+
+                Vector3 newDirection = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
+                playerControl.AddForce(newDirection.normalized * newSpeed, ForceMode.Force);
+                isMoving = true;
+            }
+            else
+            {
+                isMoving = false;
+            }
         }
     }
 
@@ -174,8 +182,13 @@ public class PlayerMovement : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                Vector3 jumpDirection = transform.forward * jumpForwardForce;
-                playerControl.velocity += jumpDirection;
+                // Calculate the forward jump direction
+                Vector3 forwardJumpDirection = transform.forward * jumpForwardForce;
+
+                // Apply the forward jump force using AddForce
+                playerControl.AddForce(forwardJumpDirection, ForceMode.VelocityChange);
+
+                // Apply the upward jump force
                 playerControl.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
 
                 if (isWalking)
