@@ -20,4 +20,5 @@
 
 [Dec. 28, 2023]
 - Speed Change based on the slope
+- Change current player speed and speed modifier
 - Some Minor fixes
