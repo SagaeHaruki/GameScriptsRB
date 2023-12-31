@@ -20,3 +20,4 @@
 
 [Dec. 28, 2023]
 - Speed Change based on the slope
+- Some Minor fixes
