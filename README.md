@@ -19,6 +19,4 @@
 <h1>Current Changes:</h1>
 
 [Dec. 28, 2023]
-- Gliding Physics Added
-- Fixed the bug when the player is moving towards a wall it gets stuck
-- Small Code Cleareance
+- Speed Change based on the slope
