@@ -62,7 +62,6 @@ public class IKSystem : MonoBehaviour
         ChangeState();
         GetSlopeAngle();
         isMoving = instance.isMoving;
-        onSlope = instance.onSlope;
         isGrounded = instance.isGrounded;
     }
 

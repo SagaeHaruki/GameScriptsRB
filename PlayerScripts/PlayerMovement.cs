@@ -7,10 +7,13 @@ using UnityEngine;
 
 [RequireComponent(typeof(IKSystem))]
 [RequireComponent(typeof(AnimationScript))]
+[RequireComponent(typeof(PlayerSpeedChange))]
+[RequireComponent(typeof(ChangeState))]
 public class PlayerMovement : MonoBehaviour
 {
     #region Instances
     AnimationScript Animscript;
+    PlayerSpeedChange speedChange;
     #endregion
 
     #region
@@ -19,13 +22,13 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private Animator animator;
     [SerializeField] private CinemachineVirtualCamera virtualCamera;
     [SerializeField] private Transform mainCamera;
-    [SerializeField] private LayerMask layerMasks;
+    [SerializeField] public LayerMask layerMasks;
     #endregion
 
     #region Player values
     [SerializeField] private float groundDistance = 0.1f;
     [SerializeField] private float playerSpeed = 5f;
-    [SerializeField] private float speedModifier = 1f;
+    [SerializeField] public float speedModifier;
     [SerializeField] private float jumpForce = 4.2f;
     [SerializeField] private float jumpForwardForce = 2.3f;
     [SerializeField] private float FallingHeightDiff = 2.2f;
@@ -37,7 +40,8 @@ public class PlayerMovement : MonoBehaviour
     private float smoothingVelocity;
     #endregion
 
-    [SerializeField] public string playerState;
+    #region
+    [SerializeField] private string playerState;
     [SerializeField] public bool isMoving;
     // Sorts of Movements
     [SerializeField] public bool isWalking;
@@ -46,23 +50,24 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] public bool isClimbing;
     [SerializeField] public bool isGliding;
     [SerializeField] public bool isAttacking;
+    #endregion
 
+    #region
     // Falling or Grounded
     [SerializeField] public bool isFalling;
     [SerializeField] public bool isGrounded;
-    [SerializeField] public bool onSlope;
-    [SerializeField] private bool goingUp;
-    [SerializeField] private bool goingDown;
 
     [SerializeField] public float glideSpeed = 5f;
     [SerializeField] public float maxGlideSpeed = 10f;
     [SerializeField] public float glideDownForceWhileGliding = 3f;
+    #endregion
 
     private void Awake()
     {
         playerControl = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
         capsuleCollider = GetComponent<CapsuleCollider>();
+        speedChange = GetComponent<PlayerSpeedChange>();
         isRunning = true;
 
         // Hides & lock the cursor
@@ -77,10 +82,14 @@ public class PlayerMovement : MonoBehaviour
         GetKeyPress();
         ChangeState();
         FallingState();
-        SpeedModifierSection();
         JumpHandlerSection();
+        MovePlayerSection();
 
+        speedModifier = speedChange.speedModifier;
+    }
 
+    private void MovePlayerSection()
+    {
         float horizontal = Input.GetKey(KeyCode.A) ? -1f : Input.GetKey(KeyCode.D) ? 1f : 0f;
         float vertical = Input.GetKey(KeyCode.W) ? 1f : Input.GetKey(KeyCode.S) ? -1f : 0f;
 
@@ -107,33 +116,6 @@ public class PlayerMovement : MonoBehaviour
             }
         }
     }
-
-    private void SpeedModifierSection()
-    {
-        // Change the speed based on the player state
-        // Note: Change the speedModifier if it doesn't sync with the animation
-
-        if (isWalking)
-        {
-            speedModifier = 2.3f;
-        }
-
-        if (isRunning)
-        {
-            speedModifier = 6.3f;
-        }
-
-        if (isSprinting)
-        {
-            speedModifier = 8.2f;
-        }
-
-        if(isGliding)
-        {
-            speedModifier = 4.6f;
-        }
-    }
-
 
     private void ChangeState()
     {
