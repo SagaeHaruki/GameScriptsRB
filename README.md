@@ -20,7 +20,7 @@
 - NPC Interaction System
 
 <h1>Current Changes as of: [January 01, 2024]</h1>
-<h2>FAQ: Why a lot of files?</h2>
+<h2>FAQ: Why a lot of Script files?</h2>
 
 - This is prolly for shorter codes for each files.
 - Yes i can make everything in one File, but i will be hard to code since there are so many lines (lul).
@@ -53,12 +53,14 @@
 
 <h2>KeyPressSystem (Script)</h2>
 
-- 
+- Toggle Walk / Run
+- Sprint Key
  
 <h2>IKSystem (Script)</h2>
 
-- 
+- NO Updates here, already clean
+- Might add a script that adjust some calculations here
 
 <h2>Animation System (Script)</h2>
 
-- 
+- No animation first, it will go later on
