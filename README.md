@@ -21,7 +21,14 @@
 
 <h1>Current Changes:</h1>
 
-[Dec. 31, 2023]
-- Speed Change based on the slope
-- Change current player speed and speed modifier
-- Some Minor fixes
+[Jan. 01, 2024]
+> PlayerMovementV2 (Script)
+  -
+
+> GroundedStateSystem (Script)
+> ChangeSpeedSystem (Script)
+> JumpingSystem (Script)
+> GlidingSystem (Script)
+> FallingSystem (Script)
+> PlayerMovementV2 (Script)
+> PlayerMovementV2 (Script)
