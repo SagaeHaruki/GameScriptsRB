@@ -19,16 +19,46 @@
 - Ledge Detection System
 - NPC Interaction System
 
-<h1>Current Changes:</h1>
+<h1>Current Changes as of: [January 01, 2024]</h1>
+<h2>FAQ: Why a lot of files?</h2>
 
-[Jan. 01, 2024]
-> PlayerMovementV2 (Script)
-  -
+- This is prolly for shorter codes for each files.
+- Yes i can make everything in one File, but i will be hard to code since there are so many lines (lul).
 
-> GroundedStateSystem (Script)
-> ChangeSpeedSystem (Script)
-> JumpingSystem (Script)
-> GlidingSystem (Script)
-> FallingSystem (Script)
-> PlayerMovementV2 (Script)
-> PlayerMovementV2 (Script)
+<h2>PlayerMovementV2 (Script)</h2>
+
+- Rework of the Previous Player Movement Ssytem
+- Shorter Code
+
+<h2>GroundedState (Script)</h2>
+
+- Better Ground Detection
+- Can Detect Slope
+
+<h2>ChangeSpeedSystem (Script)</h2>
+
+- Change Player Speed Based on the Slope
+
+<h2>JumpingSystem (Script)</h2>
+
+- 
+
+<h2>GlidingSystem (Script)</h2>
+
+- 
+
+<h2>FallingSystem (Script)</h2>
+
+- 
+
+<h2>KeyPressSystem (Script)</h2>
+
+- 
+ 
+<h2>IKSystem (Script)</h2>
+
+- 
+
+<h2>Animation System (Script)</h2>
+
+- 
