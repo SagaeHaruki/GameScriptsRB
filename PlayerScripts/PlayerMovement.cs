@@ -7,13 +7,10 @@ using UnityEngine;
 
 [RequireComponent(typeof(IKSystem))]
 [RequireComponent(typeof(AnimationScript))]
-[RequireComponent(typeof(PlayerSpeedChange))]
-[RequireComponent(typeof(ChangeState))]
 public class PlayerMovement : MonoBehaviour
 {
     #region Instances
     AnimationScript Animscript;
-    PlayerSpeedChange speedChange;
     #endregion
 
     #region
@@ -67,7 +64,6 @@ public class PlayerMovement : MonoBehaviour
         playerControl = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
         capsuleCollider = GetComponent<CapsuleCollider>();
-        speedChange = GetComponent<PlayerSpeedChange>();
         isRunning = true;
 
         // Hides & lock the cursor
@@ -84,8 +80,6 @@ public class PlayerMovement : MonoBehaviour
         FallingState();
         JumpHandlerSection();
         MovePlayerSection();
-
-        speedModifier = speedChange.speedModifier;
     }
 
     private void MovePlayerSection()

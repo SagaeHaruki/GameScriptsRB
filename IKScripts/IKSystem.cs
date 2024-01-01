@@ -5,7 +5,7 @@ using UnityEngine.XR;
 
 public class IKSystem : MonoBehaviour
 {
-    PlayerMovement instance;
+    PlayerMovementV2 instance;
     #region Some Vars here
     [SerializeField] private Rigidbody charControl;
     [SerializeField] private Animator animator;
@@ -54,7 +54,7 @@ public class IKSystem : MonoBehaviour
     {
         animator = GetComponent<Animator>();
         charControl = GetComponent<Rigidbody>();
-        instance = GetComponent<PlayerMovement>();
+        instance = GetComponent<PlayerMovementV2>();
     }
 
     private void Update()

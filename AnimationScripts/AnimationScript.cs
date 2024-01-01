@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class AnimationScript : MonoBehaviour
 {
-    PlayerMovement instance;
+    PlayerMovementV2 instance;
     #region Bools
     [SerializeField] private bool playerState;
     [SerializeField] private bool isMoving;
@@ -16,7 +16,7 @@ public class AnimationScript : MonoBehaviour
 
     private void Awake()
     {
-        instance = GetComponent<PlayerMovement>();
+        instance = GetComponent<PlayerMovementV2>();
     }
 
     private void Update()
