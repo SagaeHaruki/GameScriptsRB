@@ -30,11 +30,12 @@ public class GroundedState : MonoBehaviour
         {
             playerMovement.isGrounded = true;
         }
-
-        if (!playerMovement.charControl.isGrounded && !playerMovement.goingDown)
+        
+        if(!playerMovement.charControl && !playerMovement.onSlope && !playerMovement.isJumping)
         {
             playerMovement.isGrounded = false;
         }
+        
     }
 
     private void GoingDownSlope()

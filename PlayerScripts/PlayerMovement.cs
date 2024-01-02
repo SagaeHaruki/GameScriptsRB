@@ -101,6 +101,17 @@ public class PlayerMovement : MonoBehaviour
                 float newSpeed = playerSpeed * speedModifier;
 
                 Vector3 newDirection = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
+
+                // Raycast to get slope normal
+                RaycastHit hit;
+                if (Physics.Raycast(transform.position, Vector3.down, out hit, 0.5f))
+                {
+                    Vector3 slopeNormal = hit.normal;
+
+                    // Adjust the direction based on slope normal
+                    newDirection = Vector3.Cross(slopeNormal, -transform.right);
+                }
+
                 playerControl.AddForce(newDirection.normalized * newSpeed, ForceMode.Force);
                 isMoving = true;
             }

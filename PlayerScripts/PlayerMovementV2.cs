@@ -6,8 +6,10 @@ using UnityEngine;
 [RequireComponent(typeof(IKSystem))]
 [RequireComponent(typeof(AnimationScript))]
 [RequireComponent(typeof(GroundedState))]
-[RequireComponent(typeof(ChangeSpeed))]
-[RequireComponent(typeof(KeyPressCheck))]
+[RequireComponent(typeof(ChangeSpeedSystem))]
+[RequireComponent(typeof(KeyPressSystem))]
+[RequireComponent(typeof(GlidingSystem))]
+[RequireComponent(typeof(JumpingSystem))]
 public class PlayerMovementV2 : MonoBehaviour
 {
     #region
@@ -16,17 +18,22 @@ public class PlayerMovementV2 : MonoBehaviour
     [SerializeField] public Transform mainCamera;
 
     // Player Componets
-    [SerializeField] public CharacterController charControl;
     [SerializeField] public Rigidbody playerRigid;
+    [SerializeField] public CharacterController charControl;
     [SerializeField] public Animator animator;
     [SerializeField] public LayerMask layerMasks;
     #endregion
     #region Player values
-    [SerializeField] public float groundDistance = 0.1f;
-    [SerializeField] public float playerSpeed = 3f;
+    // PlayerSpeed
+    [SerializeField] public float playerSpeed = 5f;
     [SerializeField] public float speedModifier;
+    [SerializeField] public Vector3 Velocity;
+
+    // Jump Force
     [SerializeField] public float jumpForce = 4.2f;
     [SerializeField] public float jumpForwardForce = 2.3f;
+
+    // Height to Ground
     [SerializeField] public float FallingHeightDiff = 1.5f;
     [SerializeField] public float GlidingHeightDiff = 0.5f;
     #endregion
@@ -65,9 +72,9 @@ public class PlayerMovementV2 : MonoBehaviour
 
     private void Awake()
     {
-        charControl = GetComponent<CharacterController>();
-        //animator = GetComponent<Animator>();
+        //animator = GetComponent<Animator>(); 
         playerRigid = GetComponent<Rigidbody>();
+        charControl = GetComponent<CharacterController>();
         isRunning = true;
 
         // Hides & lock the cursor
@@ -92,9 +99,9 @@ public class PlayerMovementV2 : MonoBehaviour
                 transform.rotation = Quaternion.Euler(0f, angle, 0f);
 
                 float newSpeed = playerSpeed * speedModifier;
-
                 Vector3 newDirection = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
-                charControl.Move(newDirection * newSpeed * Time.deltaTime);
+                charControl.Move(newDirection.normalized * newSpeed * Time.deltaTime);
+
                 isMoving = true;
             }
             else
