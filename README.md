@@ -2,7 +2,8 @@
 3D Game Scripts using Unity Engine
 ---
 
-<h1>Dev's Message:</h1>
+<h1>Archived: </h1>
 
-- Upon further consideration, this repository will be deleted and will add a new one, but this time i will be using Character controller, no other things, such as rigid body, capsule collider etc... some complications has been happening when mixing such components, since i've only been into game dev for past 3 months, i don't have all the knowledge on how each functions works.
+- You may use this as a Template / Reference for your 3D Game Scripts
+- Proceed to [This Project](https://github.com/SagaeHaruki/3D-GameScripts) for the updated version of this Script Project
 
